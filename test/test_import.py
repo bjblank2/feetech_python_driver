@@ -9,4 +9,5 @@ def test_public_api_importable():
     assert hasattr(feetech_python_driver, 'MotorNormMode')
     assert hasattr(feetech_python_driver, 'So101CalibrationNodeBase')
     assert hasattr(feetech_python_driver, 'SO101_ARM_MOTORS')
+    assert hasattr(feetech_python_driver, 'run_calibration_main')
     assert len(feetech_python_driver.SO101_ARM_MOTORS) == 6

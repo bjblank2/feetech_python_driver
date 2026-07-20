@@ -14,6 +14,7 @@ import sys
 from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
+import rclpy
 from rclpy.node import Node
 import yaml
 
@@ -272,3 +273,27 @@ class So101CalibrationNodeBase(Node):
                 self.bus.disconnect(disable_torque=False)
             except Exception:
                 pass
+
+
+def run_calibration_main(node_factory):
+    """Standard main() body shared by every package's `*_calibration_node` entry point.
+
+    Call `rclpy.init()` first, then pass a zero-arg callable that constructs
+    the calibration node (a So101CalibrationNodeBase subclass/instance).
+    """
+    node = node_factory()
+    try:
+        success = node.run_calibration()
+        if not success:
+            print('\n  ✗ Calibration failed')
+            sys.exit(1)
+    except KeyboardInterrupt:
+        print('\n\n  Calibration interrupted by user')
+        sys.exit(1)
+    except Exception as e:
+        print(f'\n  ERROR: {e}')
+        sys.exit(1)
+    finally:
+        node.on_shutdown()
+        node.destroy_node()
+        rclpy.shutdown()
